@@ -389,6 +389,7 @@ public partial class MainWindow : Window
         moveRight = false;
         frameCount = 0;
         viewModel.Reset();
+        gameTime.Reset();
 
         // 重新开始循环
         CompositionTarget.Rendering += GameLoop;
