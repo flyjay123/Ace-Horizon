@@ -9,6 +9,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ShootPlaneGame.Utils;
 
 namespace ShootPlaneGame;
 
@@ -17,7 +18,8 @@ namespace ShootPlaneGame;
 /// </summary>
 public partial class MainWindow : Window
 {
-    private ScoreViewModel viewModel = new();
+    private GameViewModel viewModel = new();
+    private GameTime gameTime = new GameTime();
     
     private double playerSpeed = 5;
     private bool moveLeft = false;
@@ -110,10 +112,13 @@ public partial class MainWindow : Window
     
     private void GameLoop(object? sender, EventArgs e)
     {
+        gameTime.Update();
+        viewModel.FPS = gameTime.FPS;
+        double delta = gameTime.DeltaTime * 100; // 转换为毫秒
         frameCount++;
-        MovePlayer();
-        MoveBullets();
-        MoveEnemies();
+        MovePlayer(delta);
+        MoveBullets(delta);
+        MoveEnemies(delta);
         CheckCollisions();
         if(frameCount % 10 == 0)
             FireBullet();
@@ -123,14 +128,14 @@ public partial class MainWindow : Window
             SpawnEnemy();
     }
     
-    private void MovePlayer()
+    private void MovePlayer(double delta)
     {
         double left = Canvas.GetLeft(Player);
 
         if (moveLeft && left > 0)
-            Canvas.SetLeft(Player, left - playerSpeed);
+            Canvas.SetLeft(Player, left - playerSpeed * delta);
         else if (moveRight && left < GameCanvas.ActualWidth - Player.Width)
-            Canvas.SetLeft(Player, left + playerSpeed);
+            Canvas.SetLeft(Player, left + playerSpeed * delta);
     }
     
     private void SpawnEnemy()
@@ -149,7 +154,7 @@ public partial class MainWindow : Window
         GameCanvas.Children.Add(enemy);
     }
 
-    private void MoveEnemies()
+    private void MoveEnemies(double delta)
     {
         List<Rectangle> enemiesToRemove = new();
 
@@ -158,7 +163,7 @@ public partial class MainWindow : Window
             if (el is Rectangle r && (string?)r.Tag == "Enemy")
             {
                 double top = Canvas.GetTop(r);
-                Canvas.SetTop(r, top + 4);
+                Canvas.SetTop(r, top + 4 * delta);
 
                 // ⛔ 检查是否越过底部
                 if (top + r.Height >= GameCanvas.ActualHeight)
@@ -187,7 +192,7 @@ public partial class MainWindow : Window
     }
 
     
-    private void MoveBullets()
+    private void MoveBullets(double delta)
     {
         List<UIElement> toRemove = new();
 
@@ -196,7 +201,7 @@ public partial class MainWindow : Window
             if (el is Rectangle r && (string)r.Tag == "Bullet")
             {
                 double top = Canvas.GetTop(r);
-                Canvas.SetTop(r, top - 10);
+                Canvas.SetTop(r, top - 10 * delta);
 
                 if (top < 0)
                     toRemove.Add(r);
@@ -345,12 +350,14 @@ public partial class MainWindow : Window
         {
             CompositionTarget.Rendering -= GameLoop;
             PauseMenu.Visibility = Visibility.Visible;
+            gameTime.Stop();
             isPaused = true;
         }
         else
         {
             CompositionTarget.Rendering += GameLoop;
             PauseMenu.Visibility = Visibility.Collapsed;
+            gameTime.Start();
             isPaused = false;
         }
     }

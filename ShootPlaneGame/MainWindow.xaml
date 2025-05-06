@@ -12,6 +12,14 @@
             <!-- 玩家飞机 -->
             <Rectangle x:Name="Player" Width="50" Height="50" Fill="Blue" />
         </Canvas>
+        <TextBlock x:Name="FpsText"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Margin="10"
+                   Foreground="White"
+                   FontSize="16"
+                   Text="{Binding FPS, StringFormat=FPS：{0}}"/>
+
         <TextBlock FontSize="24"
                    Foreground="White"
                    HorizontalAlignment="Right"
