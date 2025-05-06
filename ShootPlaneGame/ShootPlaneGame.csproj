@@ -9,4 +9,19 @@
         <LangVersion>10</LangVersion>
     </PropertyGroup>
 
+    <ItemGroup>
+      <None Remove="resource\哈基米1.gif" />
+      <Resource Include="Assets\cat1.gif">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="Assets\cat2.gif" />
+      <Resource Include="Assets\cat2.gif" />
+      <None Remove="Assets\cat3.gif" />
+      <Resource Include="Assets\cat3.gif" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
+    </ItemGroup>
+
 </Project>

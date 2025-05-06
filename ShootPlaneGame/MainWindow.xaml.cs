@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ShootPlaneGame.Utils;
+using WpfAnimatedGif;
 
 namespace ShootPlaneGame;
 
@@ -29,6 +30,11 @@ public partial class MainWindow : Window
     private Random rand = new Random();
     private int frameCount = 0;
     
+    private BitmapImage cat1 = new BitmapImage(new Uri("pack://application:,,,/Assets/cat1.gif"));
+    private BitmapImage cat2 = new BitmapImage(new Uri("pack://application:,,,/Assets/cat2.gif"));
+    private BitmapImage cat3 = new BitmapImage(new Uri("pack://application:,,,/Assets/cat3.gif"));
+    private List<BitmapImage> catImages;
+    
     
     public MainWindow()
     {
@@ -37,6 +43,7 @@ public partial class MainWindow : Window
 
         DataContext = viewModel;
         Loaded += MainWindow_Loaded;
+        catImages = new List<BitmapImage>(){cat1, cat2, cat3};
     }
 
     #region 事件处理
@@ -140,27 +147,22 @@ public partial class MainWindow : Window
     
     private void SpawnEnemy()
     {
-        Rectangle enemy = new Rectangle
-        {
-            Width = 40,
-            Height = 40,
-            Fill = Brushes.Red,
-            Tag = "Enemy"
-        };
-
-        double x = rand.Next(0, (int)(GameCanvas.ActualWidth - enemy.Width));
-        Canvas.SetLeft(enemy, x);
-        Canvas.SetTop(enemy, -enemy.Height);
+        double x = rand.Next(0, (int)(GameCanvas.ActualWidth - 40));
+        // select random image from catList
+        BitmapImage cat = catImages[rand.Next(0, catImages.Count)];
+        Enemy enemy = new Enemy(x, -40, 40, 40, cat);
+        ImageBehavior.SetAnimatedSource(enemy, cat);
+        
         GameCanvas.Children.Add(enemy);
     }
 
     private void MoveEnemies(double delta)
     {
-        List<Rectangle> enemiesToRemove = new();
+        List<Enemy> enemiesToRemove = new();
 
         foreach (UIElement el in GameCanvas.Children)
         {
-            if (el is Rectangle r && (string?)r.Tag == "Enemy")
+            if (el is Enemy r && (string?)r.Tag == "Enemy")
             {
                 double top = Canvas.GetTop(r);
                 Canvas.SetTop(r, top + 4 * delta);
@@ -215,7 +217,7 @@ public partial class MainWindow : Window
     private void CheckCollisions()
     {
         var bullets = GameCanvas.Children.OfType<Rectangle>().Where(r => (string)r.Tag == "Bullet").ToList();
-        var enemies = GameCanvas.Children.OfType<Rectangle>().Where(r => (string)r.Tag == "Enemy").ToList();
+        var enemies = GameCanvas.Children.OfType<Enemy>().Where(r => (string)r.Tag == "Enemy").ToList();
 
         foreach (var bullet in bullets)
         {
@@ -250,7 +252,7 @@ public partial class MainWindow : Window
         ShakeWindow();
     }
     
-    private void KillEnemy(Rectangle enemy)
+    private void KillEnemy(Enemy enemy)
     {
         GameCanvas.Children.Remove(enemy);
         viewModel.Score += 1;
@@ -373,8 +375,12 @@ public partial class MainWindow : Window
 
         foreach (UIElement el in GameCanvas.Children)
         {
-            if (el is Rectangle r && ((string?)r.Tag == "Bullet" || (string?)r.Tag == "Enemy"))
+            if (el is Rectangle r && ((string?)r.Tag == "Bullet"))
                 toRemove.Add(el);
+                
+            else if (el is Enemy enemy && (string?)enemy.Tag == "Enemy") 
+                toRemove.Add(el);
+
         }
 
         foreach (var el in toRemove)
