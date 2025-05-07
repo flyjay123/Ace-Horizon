@@ -31,6 +31,7 @@ public partial class GameView : System.Windows.Controls.UserControl
         InitializeComponent();
         DataContext = viewModel;
         catImages = new List<BitmapImage>() { Resource.Cat1, Resource.Cat2, Resource.Cat3 };
+        InputMethod.SetIsInputMethodEnabled(this, false); // 禁用输入法
     }
 
     #region 事件处理
@@ -109,8 +110,7 @@ public partial class GameView : System.Windows.Controls.UserControl
         double delta = gameTime.DeltaTime * 100; // 转换为毫秒
         frameCount++;
         MovePlayer(delta);
-        MoveBullets(delta);
-        MoveEnemies(delta);
+        MoveBulletsAndEnemies(delta);
         CheckCollisions();
         if (frameCount % 10 == 0)
             FireBullet();
@@ -141,19 +141,29 @@ public partial class GameView : System.Windows.Controls.UserControl
         GameCanvas.Children.Add(enemy);
     }
 
-    private void MoveEnemies(double delta)
+
+    private void MoveBulletsAndEnemies(double delta)
     {
+        List<UIElement> toRemove = new();
         List<Enemy> enemiesToRemove = new();
 
         foreach (UIElement el in GameCanvas.Children)
         {
-            if (el is Enemy r && (string?)r.Tag == "Enemy")
+            if (el is Bullet bullet && (string)bullet.Tag == "Bullet")
             {
-                double top = Canvas.GetTop(r);
-                Canvas.SetTop(r, top + 4 * delta);
+                double top = Canvas.GetTop(bullet);
+                Canvas.SetTop(bullet, top - 10 * delta);
+
+                if (top < 0)
+                    toRemove.Add(bullet);
+            }
+            else if (el is Enemy enemy && (string?)enemy.Tag == "Enemy")
+            {
+                double top = Canvas.GetTop(enemy);
+                Canvas.SetTop(enemy, top + 4 * delta);
 
                 // ⛔ 检查是否越过底部
-                if (top + r.Height >= GameCanvas.ActualHeight)
+                if (top + enemy.Height >= GameCanvas.ActualHeight)
                 {
                     LoseLife();
                     if (viewModel.Lives <= 0)
@@ -161,43 +171,27 @@ public partial class GameView : System.Windows.Controls.UserControl
                         GameOver(); // 生命耗尽则失败
                     }
 
-                    GameCanvas.Children.Remove(r); // 移除敌人
+                    GameCanvas.Children.Remove(enemy); // 移除敌人
                     return; // 不再继续处理这个敌人
                 }
 
 
-                if (Canvas.GetTop(r) > GameCanvas.ActualHeight)
+                if (Canvas.GetTop(enemy) > GameCanvas.ActualHeight)
                 {
-                    enemiesToRemove.Add(r);
+                    enemiesToRemove.Add(enemy);
                 }
             }
         }
 
+        foreach (var el in toRemove)
+        {
+            GameCanvas.Children.Remove(el);
+        }
+        
         foreach (var enemy in enemiesToRemove)
         {
             GameCanvas.Children.Remove(enemy);
         }
-    }
-
-
-    private void MoveBullets(double delta)
-    {
-        List<UIElement> toRemove = new();
-
-        foreach (UIElement el in GameCanvas.Children)
-        {
-            if (el is Bullet r && (string)r.Tag == "Bullet")
-            {
-                double top = Canvas.GetTop(r);
-                Canvas.SetTop(r, top - 10 * delta);
-
-                if (top < 0)
-                    toRemove.Add(r);
-            }
-        }
-
-        foreach (var el in toRemove)
-            GameCanvas.Children.Remove(el);
     }
 
     private void CheckCollisions()
@@ -207,13 +201,9 @@ public partial class GameView : System.Windows.Controls.UserControl
 
         foreach (var bullet in bullets)
         {
-            // Rect bulletRect = bullet.GetBounds(); 
             Rect bulletRect = new(Canvas.GetLeft(bullet), Canvas.GetTop(bullet), bullet.RenderSize.Width, bullet.RenderSize.Height);
-            // Console.WriteLine("bulletRect2: " + bulletRect2);
-            // Console.WriteLine("bulletRect: " + bulletRect);
             foreach (var enemy in enemies)
             {
-                // Rect enemyRect = enemy.GetBounds();
                 Rect enemyRect = new(Canvas.GetLeft(enemy), Canvas.GetTop(enemy), enemy.RenderSize.Width, enemy.RenderSize.Height);
 
                 if (bulletRect.IntersectsWith(enemyRect))
@@ -310,7 +300,6 @@ public partial class GameView : System.Windows.Controls.UserControl
                 Opacity = 0.8
             };
 
-            // 计算粒子随机位置和速度
             double offsetX = rand.Next(-20, 20);
             double offsetY = rand.Next(-20, 20);
 
@@ -319,17 +308,17 @@ public partial class GameView : System.Windows.Controls.UserControl
 
             GameCanvas.Children.Add(particle);
 
-            // 动画效果：粒子放大并淡出
+            // 每个动画单独创建
             var animationScaleX = new DoubleAnimation(1, 4, TimeSpan.FromMilliseconds(150));
             var animationScaleY = new DoubleAnimation(1, 4, TimeSpan.FromMilliseconds(150));
             var animationFade = new DoubleAnimation(0.8, 0, TimeSpan.FromMilliseconds(150));
 
+            // 注册到当前动画实例
+            animationFade.Completed += (s, e) => GameCanvas.Children.Remove(particle);
+
             particle.BeginAnimation(WidthProperty, animationScaleX);
             particle.BeginAnimation(HeightProperty, animationScaleY);
             particle.BeginAnimation(OpacityProperty, animationFade);
-
-            // 动画结束后移除粒子
-            animationFade.Completed += (s, e) => GameCanvas.Children.Remove(particle);
         }
     }
 
