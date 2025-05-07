@@ -18,6 +18,10 @@
       <Resource Include="Assets\cat2.gif" />
       <None Remove="Assets\cat3.gif" />
       <Resource Include="Assets\cat3.gif" />
+      <None Remove="Assets\basketball.png" />
+      <Resource Include="Assets\basketball.png" />
+      <None Remove="Assets\selfplane.png" />
+      <Resource Include="Assets\selfplane.png" />
     </ItemGroup>
 
     <ItemGroup>

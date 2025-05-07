@@ -1,3 +1,5 @@
+using ShootPlaneGame.Utils;
+
 namespace ShootPlaneGame;
 
 using System.ComponentModel;
@@ -6,7 +8,7 @@ using System.Runtime.CompilerServices;
 public class GameViewModel : INotifyPropertyChanged
 {
     // The player's score
-    private int score;
+    private int score = GameSetting.InitialScore;
     public int Score
     {
         get => score;
@@ -14,7 +16,7 @@ public class GameViewModel : INotifyPropertyChanged
     }
     
     // The number of lives left
-    private int lives = 3;
+    private int lives = GameSetting.InitialLives;
     public int Lives
     {
         get => lives;

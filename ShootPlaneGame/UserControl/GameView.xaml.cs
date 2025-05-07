@@ -17,14 +17,15 @@ public partial class GameView : System.Windows.Controls.UserControl
     private GameViewModel viewModel = new();
     private GameTime gameTime = new GameTime();
 
-    private double playerSpeed = 5;
     private bool moveLeft = false;
     private bool moveRight = false;
     private bool isPaused = false;
 
     private Random rand = new Random();
-    private int frameCount = 0;
     private List<BitmapImage> catImages;
+    
+    private double bulletCooldown;
+    private double enemySpawnCooldown;
 
     public GameView()
     {
@@ -107,17 +108,28 @@ public partial class GameView : System.Windows.Controls.UserControl
     {
         gameTime.Update();
         viewModel.FPS = gameTime.FPS;
-        double delta = gameTime.DeltaTime * 100; // 转换为毫秒
-        frameCount++;
+        double delta = gameTime.DeltaTime;
         MovePlayer(delta);
         MoveBulletsAndEnemies(delta);
         CheckCollisions();
-        if (frameCount % 10 == 0)
+        
+        // 子弹发射间隔
+        bulletCooldown += delta;
+        if (bulletCooldown >= GameSetting.BulletSpawnInterval / 1000.0)
+        {
             FireBullet();
-
-        // 每隔 50 帧生成一个敌机
-        if (frameCount % 50 == 0)
+            bulletCooldown = 0;
+        }
+        
+        // 敌机生成间隔
+        enemySpawnCooldown += delta;
+        if (enemySpawnCooldown >= GameSetting.EnemySpawnInterval / 1000.0)
+        {
             SpawnEnemy();
+            enemySpawnCooldown = 0;
+        }
+        
+        DeltaText.Text = gameTime.DeltaTime.ToString();
     }
 
     private void MovePlayer(double delta)
@@ -125,9 +137,9 @@ public partial class GameView : System.Windows.Controls.UserControl
         double left = Canvas.GetLeft(Player);
 
         if (moveLeft && left > 0)
-            Canvas.SetLeft(Player, left - playerSpeed * delta);
+            Canvas.SetLeft(Player, left - GameSetting.PlayerSpeed * delta);
         else if (moveRight && left < GameCanvas.ActualWidth - Player.Width)
-            Canvas.SetLeft(Player, left + playerSpeed * delta);
+            Canvas.SetLeft(Player, left + GameSetting.PlayerSpeed * delta);
     }
 
     private void SpawnEnemy()
@@ -152,7 +164,7 @@ public partial class GameView : System.Windows.Controls.UserControl
             if (el is Bullet bullet && (string)bullet.Tag == "Bullet")
             {
                 double top = Canvas.GetTop(bullet);
-                Canvas.SetTop(bullet, top - 10 * delta);
+                Canvas.SetTop(bullet, top - GameSetting.BulletSpeed * delta);
 
                 if (top < 0)
                     toRemove.Add(bullet);
@@ -160,7 +172,7 @@ public partial class GameView : System.Windows.Controls.UserControl
             else if (el is Enemy enemy && (string?)enemy.Tag == "Enemy")
             {
                 double top = Canvas.GetTop(enemy);
-                Canvas.SetTop(enemy, top + 4 * delta);
+                Canvas.SetTop(enemy, top + GameSetting.EnemySpeed * delta);
 
                 // ⛔ 检查是否越过底部
                 if (top + enemy.Height >= GameCanvas.ActualHeight)
@@ -373,7 +385,6 @@ public partial class GameView : System.Windows.Controls.UserControl
         // 重置变量
         moveLeft = false;
         moveRight = false;
-        frameCount = 0;
         viewModel.Reset();
         gameTime.Reset();
 

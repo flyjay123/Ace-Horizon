@@ -20,6 +20,13 @@
                    Foreground="White"
                    FontSize="16"
                    Text="{Binding FPS, StringFormat=FPS：{0}}"/>
+        
+        <TextBlock x:Name="DeltaText"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Margin="10,30,10,10"
+                   Foreground="White"
+                   FontSize="16"/>
 
         <TextBlock FontSize="24"
                    Foreground="White"
