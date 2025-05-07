@@ -128,8 +128,6 @@ public partial class GameView : System.Windows.Controls.UserControl
             SpawnEnemy();
             enemySpawnCooldown = 0;
         }
-        
-        DeltaText.Text = gameTime.DeltaTime.ToString();
     }
 
     private void MovePlayer(double delta)

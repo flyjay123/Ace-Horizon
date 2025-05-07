@@ -7,6 +7,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
         <LangVersion>10</LangVersion>
+        <ApplicationIcon>Assets\plane.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
