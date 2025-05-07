@@ -9,6 +9,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ShootPlaneGame.Assets;
 using ShootPlaneGame.Utils;
 using WpfAnimatedGif;
 
@@ -29,12 +30,7 @@ public partial class MainWindow : Window
     
     private Random rand = new Random();
     private int frameCount = 0;
-    
-    private BitmapImage cat1 = new BitmapImage(new Uri("pack://application:,,,/Assets/cat1.gif"));
-    private BitmapImage cat2 = new BitmapImage(new Uri("pack://application:,,,/Assets/cat2.gif"));
-    private BitmapImage cat3 = new BitmapImage(new Uri("pack://application:,,,/Assets/cat3.gif"));
     private List<BitmapImage> catImages;
-    
     
     public MainWindow()
     {
@@ -43,7 +39,8 @@ public partial class MainWindow : Window
 
         DataContext = viewModel;
         Loaded += MainWindow_Loaded;
-        catImages = new List<BitmapImage>(){cat1, cat2, cat3};
+        catImages = new List<BitmapImage>(){Resource.Cat1, Resource.Cat2, Resource.Cat3};
+        
     }
 
     #region 事件处理

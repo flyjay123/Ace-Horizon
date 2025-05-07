@@ -7,10 +7,11 @@
         mc:Ignorable="d"
         Title="飞机大战" Height="800" Width="480"
         KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" SizeChanged="Window_SizeChanged" Background="Black">
+    
     <Grid>
         <Canvas Name="GameCanvas">
             <!-- 玩家飞机 -->
-            <Rectangle x:Name="Player" Width="50" Height="50" Fill="Blue" />
+            <Image x:Name="Player" Width="50" Height="50" Source="pack://application:,,,/Assets/selfplane.png"/>
         </Canvas>
         <TextBlock x:Name="FpsText"
                    HorizontalAlignment="Left"
