@@ -26,6 +26,8 @@ public partial class GameView : System.Windows.Controls.UserControl
     
     private double bulletCooldown;
     private double enemySpawnCooldown;
+    private double bossSpawnCooldown;
+    private const double bossSize = 100;
 
     public GameView()
     {
@@ -139,6 +141,14 @@ public partial class GameView : System.Windows.Controls.UserControl
             SpawnEnemy();
             enemySpawnCooldown = 0;
         }
+        
+        // Boss生成间隔
+        bossSpawnCooldown += delta;
+        if (bossSpawnCooldown >= GameSetting.BossSpawnInterval / 1000.0)
+        {
+            SpawnBoss();
+            bossSpawnCooldown = 0;
+        }
     }
 
     private void MovePlayer(double delta)
@@ -168,6 +178,22 @@ public partial class GameView : System.Windows.Controls.UserControl
         ImageBehavior.SetAnimatedSource(enemy.Sprite, cat);
 
         GameCanvas.Children.Add(enemy);
+    }
+
+    private void SpawnBoss()
+    {
+        double x = rand.Next(0, (int)(GameCanvas.ActualWidth - bossSize));
+        Enemy boss = new Enemy(Resource.KunKun1)
+        {
+            Position = new Point(x, 0),
+            Width = bossSize,
+            Height = bossSize,
+            MaxHealth = 6,
+            Health = 6,
+            Tag = "Enemy"
+        };
+        ImageBehavior.SetAnimatedSource(boss.Sprite, Resource.KunKun1);
+        GameCanvas.Children.Add(boss);
     }
 
 

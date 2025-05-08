@@ -27,6 +27,8 @@
       <Resource Include="Assets\planewithyt.png" />
       <None Remove="Assets\heart.png" />
       <Resource Include="Assets\heart.png" />
+      <None Remove="Assets\ikun1.gif" />
+      <Resource Include="Assets\kunkun1.gif" />
     </ItemGroup>
 
     <ItemGroup>

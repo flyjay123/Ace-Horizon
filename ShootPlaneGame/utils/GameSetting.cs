@@ -9,6 +9,7 @@ public static class GameSetting
 
     public static int EnemySpawnInterval = 1000; // 敌机生成间隔（秒）
     public static int BulletSpawnInterval = 200; // 子弹生成间隔（秒）
+    public static int BossSpawnInterval = 5000; // BOSS生成间隔（秒）
 
     public static int InitialLives = 3; // 初始生命值
     public static int InitialScore = 0; // 初始分数
