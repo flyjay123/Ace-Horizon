@@ -29,6 +29,9 @@
       <Resource Include="Assets\heart.png" />
       <None Remove="Assets\ikun1.gif" />
       <Resource Include="Assets\kunkun1.gif" />
+      <None Update="Assets\Sounds\tiaolouji.aac">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>

@@ -19,6 +19,7 @@ public class GameTime
     {
         stopwatch.Start();
         lastTimestamp = stopwatch.ElapsedMilliseconds;
+        SoundPlayer.BeginBackgroundMusic("Assets/Sounds/tiaolouji.aac");
     }
     
     public void Stop()
