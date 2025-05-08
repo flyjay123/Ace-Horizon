@@ -83,6 +83,17 @@ public partial class GameView : System.Windows.Controls.UserControl
         DamageOverlay.Width = ActualWidth;
         DamageOverlay.Height = ActualHeight;
     }
+    
+    private void GameView_OnMouseMove(object sender, MouseEventArgs e)
+    {
+        var mousePos = e.GetPosition(GameCanvas);
+        var playerX = mousePos.X - Player.Width / 2;
+        if (playerX < 0)
+            playerX = 0;
+        else if (playerX > GameCanvas.ActualWidth - Player.Width)
+            playerX = GameCanvas.ActualWidth - Player.Width;
+        Canvas.SetLeft(Player, playerX);
+    }
 
     #endregion
 
