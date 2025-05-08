@@ -22,6 +22,11 @@ public class SoundPlayer
     {
         mediaPlayer.Pause();
     }
+    
+    public static void SetVolume(double volume)
+    {
+        mediaPlayer.Volume = volume;
+    }
 
     public static void StopBackgroundMusic()
     {

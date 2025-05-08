@@ -8,13 +8,22 @@ using System.Runtime.CompilerServices;
 
 public class GameViewModel : INotifyPropertyChanged
 {
+    private SettingsViewModel settingsViewModel;
+    
     public GameViewModel()
     {
+        settingsViewModel = new SettingsViewModel();
+        Reset();
+    }
+    
+    public GameViewModel(SettingsViewModel settingsViewModel)
+    {
+        this.settingsViewModel = settingsViewModel;
         Reset();
     }
     
     // The player's score
-    private int score = GameSetting.InitialScore;
+    private int score;
     public int Score
     {
         get => score;
@@ -22,7 +31,7 @@ public class GameViewModel : INotifyPropertyChanged
     }
     
     // The number of lives left
-    private int lives = GameSetting.InitialLives;
+    private int lives;
     public int Lives
     {
         get => lives;
@@ -50,8 +59,8 @@ public class GameViewModel : INotifyPropertyChanged
     
     public void Reset()
     {
-        Score = GameSetting.InitialScore;
-        Lives = GameSetting.InitialLives;
+        Score = settingsViewModel.InitialScore;
+        Lives = settingsViewModel.InitialLives;
         FPS = 0;
     }
 

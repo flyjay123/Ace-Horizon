@@ -14,7 +14,7 @@ namespace ShootPlaneGame.UserControl;
 
 public partial class GameView : System.Windows.Controls.UserControl
 {
-    private GameViewModel viewModel = new();
+    private GameViewModel ViewModel;
     private GameTime gameTime = new GameTime();
 
     private bool moveLeft = false;
@@ -28,11 +28,14 @@ public partial class GameView : System.Windows.Controls.UserControl
     private double enemySpawnCooldown;
     private double bossSpawnCooldown;
     private const double bossSize = 100;
+    private SettingsViewModel settingsViewModel = new ();
 
     public GameView()
     {
         InitializeComponent();
-        DataContext = viewModel;
+        ViewModel = new GameViewModel(settingsViewModel);
+        DataContext = ViewModel;
+        SettingControl.DataContext = settingsViewModel;
         catImages = new List<BitmapImage>() { Resource.Cat1, Resource.Cat2, Resource.Cat3 };
         InputMethod.SetIsInputMethodEnabled(this, false); // 禁用输入法
     }
@@ -41,20 +44,11 @@ public partial class GameView : System.Windows.Controls.UserControl
 
     private void Window_KeyDown(object sender, KeyEventArgs e)
     {
-        if (e.Key is Key.Left or Key.A)
-            moveLeft = true;
-        else if (e.Key is Key.Right or Key.D)
-            moveRight = true;
-        else if (e.Key == Key.Escape)
+        if (e.Key == Key.Escape)
             TogglePause();
-    }
-
-    private void Window_KeyUp(object sender, KeyEventArgs e)
-    {
-        if (e.Key is Key.Left or Key.A)
-            moveLeft = false;
-        else if (e.Key is Key.Right or Key.D)
-            moveRight = false;
+        
+        if(e.Key == Key.Tab)
+            SettingControl.Visibility = SettingControl.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private void RestartButton_Click(object sender, RoutedEventArgs e)
@@ -120,15 +114,14 @@ public partial class GameView : System.Windows.Controls.UserControl
     private void GameLoop(object? sender, EventArgs e)
     {
         gameTime.Update();
-        viewModel.FPS = gameTime.FPS;
+        ViewModel.FPS = gameTime.FPS;
         double delta = gameTime.DeltaTime;
-        MovePlayer(delta);
         MoveBulletsAndEnemies(delta);
         CheckCollisions();
         
         // 子弹发射间隔
         bulletCooldown += delta;
-        if (bulletCooldown >= GameSetting.BulletSpawnInterval / 1000.0)
+        if (bulletCooldown >= settingsViewModel.BulletSpawnInterval / 1000.0)
         {
             FireBullet();
             bulletCooldown = 0;
@@ -136,7 +129,7 @@ public partial class GameView : System.Windows.Controls.UserControl
         
         // 敌机生成间隔
         enemySpawnCooldown += delta;
-        if (enemySpawnCooldown >= GameSetting.EnemySpawnInterval / 1000.0)
+        if (enemySpawnCooldown >= settingsViewModel.EnemySpawnInterval / 1000.0)
         {
             SpawnEnemy();
             enemySpawnCooldown = 0;
@@ -144,21 +137,11 @@ public partial class GameView : System.Windows.Controls.UserControl
         
         // Boss生成间隔
         bossSpawnCooldown += delta;
-        if (bossSpawnCooldown >= GameSetting.BossSpawnInterval / 1000.0)
+        if (bossSpawnCooldown >= settingsViewModel.BossSpawnInterval / 1000.0)
         {
             SpawnBoss();
             bossSpawnCooldown = 0;
         }
-    }
-
-    private void MovePlayer(double delta)
-    {
-        double left = Canvas.GetLeft(Player);
-
-        if (moveLeft && left > 0)
-            Canvas.SetLeft(Player, left - GameSetting.PlayerSpeed * delta);
-        else if (moveRight && left < GameCanvas.ActualWidth - Player.Width)
-            Canvas.SetLeft(Player, left + GameSetting.PlayerSpeed * delta);
     }
 
     private void SpawnEnemy()
@@ -169,6 +152,7 @@ public partial class GameView : System.Windows.Controls.UserControl
         Enemy enemy = new Enemy(cat)
         {
             Position = new Point(x, 0),
+            Speed = settingsViewModel.EnemySpeed,
             Width = 40,
             Height = 40,
             MaxHealth = 3,
@@ -208,7 +192,7 @@ public partial class GameView : System.Windows.Controls.UserControl
             if (el is Bullet bullet && (string)bullet.Tag == "Bullet")
             {
                 double top = Canvas.GetTop(bullet);
-                Canvas.SetTop(bullet, top - GameSetting.BulletSpeed * delta);
+                Canvas.SetTop(bullet, top - settingsViewModel.BulletSpeed * delta);
 
                 if (top < 0)
                     toRemove.Add(bullet);
@@ -225,7 +209,7 @@ public partial class GameView : System.Windows.Controls.UserControl
                 if (enemy.Position.Y + enemy.Height >= GameCanvas.ActualHeight)
                 {
                     LoseLife();
-                    if (viewModel.Lives <= 0)
+                    if (ViewModel.Lives <= 0)
                     {
                         GameOver(); // 生命耗尽则失败
                     }
@@ -312,8 +296,8 @@ public partial class GameView : System.Windows.Controls.UserControl
 
     private void LoseLife()
     {
-        viewModel.Lives -= 1;
-        if (viewModel.Lives <= 0)
+        ViewModel.Lives -= 1;
+        if (ViewModel.Lives <= 0)
         {
             GameOver(); // 生命耗尽则失败
         }
@@ -328,7 +312,7 @@ public partial class GameView : System.Windows.Controls.UserControl
     private void KillEnemy(Enemy enemy)
     {
         GameCanvas.Children.Remove(enemy);
-        viewModel.Score += enemy.ScoreValue;
+        ViewModel.Score += enemy.ScoreValue;
 
         // System.Media.SystemSounds.Beep.Play();
         ShowExplosionEffect(Canvas.GetLeft(enemy), Canvas.GetTop(enemy));
@@ -424,6 +408,8 @@ public partial class GameView : System.Windows.Controls.UserControl
     {
         if (!isPaused)
         {
+            if (settingsViewModel.IsMusicEnabled)
+                SoundPlayer.PauseBackgroundMusic();
             CompositionTarget.Rendering -= GameLoop;
             PauseMenu.Visibility = Visibility.Visible;
             gameTime.Stop();
@@ -431,6 +417,8 @@ public partial class GameView : System.Windows.Controls.UserControl
         }
         else
         {
+            if(settingsViewModel.IsMusicEnabled)
+                SoundPlayer.PlayBackgroundMusic();
             CompositionTarget.Rendering += GameLoop;
             PauseMenu.Visibility = Visibility.Collapsed;
             gameTime.Start();
@@ -467,8 +455,11 @@ public partial class GameView : System.Windows.Controls.UserControl
         // 重置变量
         moveLeft = false;
         moveRight = false;
-        viewModel.Reset();
+        ViewModel.Reset();
         gameTime.Reset();
+        
+        if(settingsViewModel.IsMusicEnabled)
+            SoundPlayer.PlayBackgroundMusic();
 
         // 重新开始循环
         CompositionTarget.Rendering += GameLoop;

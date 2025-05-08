@@ -6,14 +6,11 @@
         xmlns:local="clr-namespace:ShootPlaneGame"
         xmlns:userControl="clr-namespace:ShootPlaneGame.UserControl"
         mc:Ignorable="d"
-        Title="飞机大战" Height="800" Width="480">
+        Title="消灭哈基米" Height="800" Width="480" Background="AntiqueWhite">
     
     <Grid>
         <userControl:GameView x:Name="GameView"
                   Background="Black">
-            <userControl:GameView.Resources>
-                <local:GameViewModel x:Key="GameViewModel"/>
-            </userControl:GameView.Resources>
         </userControl:GameView>
     </Grid>
 </Window>

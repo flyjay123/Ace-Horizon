@@ -5,76 +5,81 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ShootPlaneGame.UserControl"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="600" d:DesignWidth="300"
              Focusable="True"
+             Height="800" Width="480"
              MouseMove="GameView_OnMouseMove"
-             KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" SizeChanged="Window_SizeChanged" Loaded="UserControl_Loaded" Background="Black">
+             KeyDown="Window_KeyDown" SizeChanged="Window_SizeChanged" Loaded="UserControl_Loaded" Background="Black">
     <Grid>
-        <Canvas Name="GameCanvas">
-            <!-- 玩家飞机 -->
-            <Image x:Name="Player" Width="100" Height="100" Source="pack://application:,,,/Assets/planewithyt.png"/>
-        </Canvas>
-        <TextBlock x:Name="FpsText"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Top"
-                   Margin="10"
-                   Foreground="White"
-                   FontSize="16"
-                   Text="{Binding FPS, StringFormat=FPS: {0}}"/>
+        <Grid>
+            <Canvas Name="GameCanvas">
+                <!-- 玩家飞机 -->
+                <Image x:Name="Player" Width="100" Height="100" Source="pack://application:,,,/Assets/planewithyt.png"/>
+            </Canvas>
+            <TextBlock x:Name="FpsText"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Margin="10"
+                       Foreground="White"
+                       FontSize="16"
+                       Text="{Binding FPS, StringFormat=FPS: {0}}"/>
 
-        <TextBlock FontSize="24"
-                   Foreground="White"
-                   HorizontalAlignment="Right"
-                   VerticalAlignment="Top"
-                   Margin="0,10,20,0"
-                   Text="{Binding Score, StringFormat=Score: {0}}" />
+            <TextBlock FontSize="24"
+                       Foreground="White"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Top"
+                       Margin="0,10,20,0"
+                       Text="{Binding Score, StringFormat=Score: {0}}" />
 
-        <ItemsControl ItemsSource="{Binding LifeIcons}"
-                      HorizontalAlignment="Right"
-                      VerticalAlignment="Top"
-                      Margin="0,50,20,0">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Image Width="24" Height="24" Source="pack://application:,,,/Assets/heart.png" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+            <ItemsControl ItemsSource="{Binding LifeIcons}"
+                          HorizontalAlignment="Right"
+                          VerticalAlignment="Top"
+                          Margin="0,50,20,0">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Image Width="24" Height="24" Source="pack://application:,,,/Assets/heart.png" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
 
-        
-        <Button Name="RestartButton"
-                Content="重新开始"
-                Width="150" Height="50"
-                Visibility="Collapsed"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Click="RestartButton_Click"
-                FontSize="20"
-                Background="Orange"
-                Foreground="White"
-                BorderBrush="DarkRed"
-                BorderThickness="2" />
-        
-        <Grid Name="PauseMenu" Background="#AA000000" Visibility="Collapsed">
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
-                <TextBlock Text="暂停菜单" FontSize="32" Foreground="White" HorizontalAlignment="Center" />
-                <Button Content="继续游戏" Width="150" Height="40" FontSize="16"
-                        Click="ResumeButton_Click" />
-                <Button Content="重新开始" Width="150" Height="40" FontSize="16"
-                        Click="RestartButton_Click" />
-            </StackPanel>
+            
+            <Button Name="RestartButton"
+                    Content="重新开始"
+                    Width="150" Height="50"
+                    Visibility="Collapsed"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Click="RestartButton_Click"
+                    FontSize="20"
+                    Background="Orange"
+                    Foreground="White"
+                    BorderBrush="DarkRed"
+                    BorderThickness="2" />
+            
+            <Grid Name="PauseMenu" Background="#AA000000" Visibility="Collapsed">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
+                    <TextBlock Text="暂停菜单" FontSize="32" Foreground="White" HorizontalAlignment="Center" />
+                    <Button Content="继续游戏" Width="150" Height="40" FontSize="16"
+                            Click="ResumeButton_Click" />
+                    <Button Content="重新开始" Width="150" Height="40" FontSize="16"
+                            Click="RestartButton_Click" />
+                </StackPanel>
+            </Grid>
+            
+            <Rectangle x:Name="DamageOverlay"
+                       Fill="Red"
+                       Opacity="0"
+                       Visibility="Collapsed"
+                       Panel.ZIndex="99"
+                       IsHitTestVisible="False" />
         </Grid>
-        
-        <Rectangle x:Name="DamageOverlay"
-                   Fill="Red"
-                   Opacity="0"
-                   Visibility="Collapsed"
-                   Panel.ZIndex="99"
-                   IsHitTestVisible="False" />
-
+        <Grid>
+            <local:SettingControl x:Name="SettingControl" Visibility="Collapsed" Width="300" Height="500"></local:SettingControl>
+        </Grid>
     </Grid>
 </UserControl>
