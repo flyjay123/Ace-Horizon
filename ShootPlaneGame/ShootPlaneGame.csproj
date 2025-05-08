@@ -23,6 +23,10 @@
       <Resource Include="Assets\basketball.png" />
       <None Remove="Assets\selfplane.png" />
       <Resource Include="Assets\selfplane.png" />
+      <None Remove="Assets\planewithyt.png" />
+      <Resource Include="Assets\planewithyt.png" />
+      <None Remove="Assets\heart.png" />
+      <Resource Include="Assets\heart.png" />
     </ItemGroup>
 
     <ItemGroup>

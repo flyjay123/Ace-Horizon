@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using ShootPlaneGame.Utils;
 
 namespace ShootPlaneGame;
@@ -7,6 +8,11 @@ using System.Runtime.CompilerServices;
 
 public class GameViewModel : INotifyPropertyChanged
 {
+    public GameViewModel()
+    {
+        Reset();
+    }
+    
     // The player's score
     private int score = GameSetting.InitialScore;
     public int Score
@@ -20,7 +26,18 @@ public class GameViewModel : INotifyPropertyChanged
     public int Lives
     {
         get => lives;
-        set => SetField(ref lives, value);
+        set
+        {
+            SetField(ref lives, value);
+            OnPropertyChanged(nameof(LifeIcons));
+        }
+    }
+
+    public ObservableCollection<int> LifeIcons => new(LivesIcons());
+
+    public IEnumerable<int> LivesIcons()
+    {
+        return Enumerable.Range(1, Lives);
     }
     
     // The frames per second (FPS)
@@ -33,8 +50,8 @@ public class GameViewModel : INotifyPropertyChanged
     
     public void Reset()
     {
-        Score = 0;
-        Lives = 3;
+        Score = GameSetting.InitialScore;
+        Lives = GameSetting.InitialLives;
         FPS = 0;
     }
 
