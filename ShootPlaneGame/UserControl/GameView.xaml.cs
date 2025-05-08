@@ -190,7 +190,8 @@ public partial class GameView : System.Windows.Controls.UserControl
             Height = bossSize,
             MaxHealth = 6,
             Health = 6,
-            Tag = "Enemy"
+            Tag = "Enemy",
+            ScoreValue = 25
         };
         ImageBehavior.SetAnimatedSource(boss.Sprite, Resource.KunKun1);
         GameCanvas.Children.Add(boss);
@@ -327,7 +328,7 @@ public partial class GameView : System.Windows.Controls.UserControl
     private void KillEnemy(Enemy enemy)
     {
         GameCanvas.Children.Remove(enemy);
-        viewModel.Score += 1;
+        viewModel.Score += enemy.ScoreValue;
 
         // System.Media.SystemSounds.Beep.Play();
         ShowExplosionEffect(Canvas.GetLeft(enemy), Canvas.GetTop(enemy));
