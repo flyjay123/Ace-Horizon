@@ -145,8 +145,16 @@ public partial class GameView : System.Windows.Controls.UserControl
         double x = rand.Next(0, (int)(GameCanvas.ActualWidth - 40));
         // select random image from catList
         BitmapImage cat = catImages[rand.Next(0, catImages.Count)];
-        Enemy enemy = new Enemy(x, -40, 40, 40, cat);
-        ImageBehavior.SetAnimatedSource(enemy, cat);
+        Enemy enemy = new Enemy(cat)
+        {
+            Position = new Point(x, 0),
+            Width = 40,
+            Height = 40,
+            MaxHealth = 3,
+            Health = 3,
+            Tag = "Enemy"
+        };
+        ImageBehavior.SetAnimatedSource(enemy.Sprite, cat);
 
         GameCanvas.Children.Add(enemy);
     }
@@ -169,11 +177,14 @@ public partial class GameView : System.Windows.Controls.UserControl
             }
             else if (el is Enemy enemy && (string?)enemy.Tag == "Enemy")
             {
-                double top = Canvas.GetTop(enemy);
-                Canvas.SetTop(enemy, top + GameSetting.EnemySpeed * delta);
+                // double top = Canvas.GetTop(enemy);
+                // Canvas.SetTop(enemy, top + GameSetting.EnemySpeed * delta);
+                
+                enemy.Update(delta);
+                // 让敌人从上到下移动
 
                 // ⛔ 检查是否越过底部
-                if (top + enemy.Height >= GameCanvas.ActualHeight)
+                if (enemy.Position.Y + enemy.Height >= GameCanvas.ActualHeight)
                 {
                     LoseLife();
                     if (viewModel.Lives <= 0)
@@ -218,9 +229,44 @@ public partial class GameView : System.Windows.Controls.UserControl
 
                 if (bulletRect.IntersectsWith(enemyRect))
                 {
-                    GameCanvas.Children.Remove(bullet);
-                    KillEnemy(enemy);
-                    return; // 避免多次修改集合
+                    // 击中敌人
+                    enemy.Health -= bullet.AttackPower;
+                    if (enemy.Health <= 0)
+                    {
+                        // 击毁敌人
+                        GameCanvas.Children.Remove(bullet);
+                        GameCanvas.Children.Remove(enemy);
+                        KillEnemy(enemy);
+                    }
+                    else
+                    {
+                        // 击中但未击毁敌人
+                        GameCanvas.Children.Remove(bullet);
+                    }
+                    
+                    // 伤害数值动画
+                    var damageText = new TextBlock
+                    {
+                        Text = bullet.AttackPower.ToString(),
+                        Foreground = Brushes.Red,
+                        FontSize = 20,
+                        FontWeight = FontWeights.Bold
+                    };
+                    Canvas.SetLeft(damageText, Canvas.GetLeft(enemy) + enemy.Width / 2);
+                    Canvas.SetTop(damageText, Canvas.GetTop(enemy) + enemy.Height / 2);
+                    GameCanvas.Children.Add(damageText);
+                    var anim = new DoubleAnimation
+                    {
+                        From = 1,
+                        To = 0,
+                        Duration = TimeSpan.FromMilliseconds(500),
+                        AutoReverse = false
+                    };
+                    anim.Completed += (s, e) =>
+                    {
+                        GameCanvas.Children.Remove(damageText);
+                    };
+                    damageText.BeginAnimation(OpacityProperty, anim);
                 }
             }
         }

@@ -18,6 +18,8 @@ public class Bullet : Image
     public double X { get; set; }
     public double Y { get; set; }
     public double Speed { get; set; } = 100;
+    
+    public double AttackPower { get; set; } = 1.0;
 
     public Bullet(double startX, double startY, double width, double height, ImageSource source)
     {
