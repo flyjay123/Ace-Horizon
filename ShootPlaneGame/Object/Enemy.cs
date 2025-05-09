@@ -158,19 +158,9 @@ private double Clamp(double value, double min, double max) =>
 
     #endregion
 
-    public void Update(double deltaTime)
-    {
-        Position = new Point(
-            Position.X,
-            Position.Y + Speed * deltaTime);
-    }
-
     public Rect GetCollisionBounds() => new Rect(
         Position.X,
         Position.Y,
         ActualWidth,
         ActualHeight);
-
-    public bool IsOutOfBounds(double canvasHeight) =>
-        Position.Y > canvasHeight + ActualHeight;
 }

@@ -15,8 +15,18 @@ namespace ShootPlaneGame.Object;
 /// </remarks>
 public class Bullet : Image
 {
-    public double X { get; set; }
-    public double Y { get; set; }
+    public static readonly DependencyProperty PositionProperty = DependencyProperty.Register(
+        "Position", typeof(Point), typeof(Bullet),
+        new FrameworkPropertyMetadata(new Point(0, 0),
+            FrameworkPropertyMetadataOptions.AffectsParentArrange,
+            OnPositionChanged));
+    
+    public Point Position
+    {
+        get => (Point)GetValue(PositionProperty);
+        set => SetValue(PositionProperty, value);
+    }
+    
     public double Speed { get; set; } = 100;
     
     public double AttackPower { get; set; } = 1.0;
@@ -28,13 +38,9 @@ public class Bullet : Image
 
         Source = source;
 
-        X = startX;
-        Y = startY;
+        Position = new Point(startX, startY);
 
         Tag = "Bullet";
-
-        Canvas.SetLeft(this, X);
-        Canvas.SetTop(this, Y);
     }
 
     public Bullet()
@@ -42,27 +48,17 @@ public class Bullet : Image
 
     }
 
-    public void Update(double deltaTime)
-    {
-        Y += Speed * deltaTime;
-        Canvas.SetTop(this, Y);
-    }
-
     public Rect GetBounds()
     {
-        return new Rect(X, Y, RenderSize.Width, RenderSize.Height);
+        return new Rect(Position.X, Position.Y, RenderSize.Width, RenderSize.Height);
     }
 
-    public bool IsOutOfCanvas(double canvasHeight)
+    private static void OnPositionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        return Y > canvasHeight;
-    }
-
-    public void SetPosition(double x, double y)
-    {
-        X = x;
-        Y = y;
-        Canvas.SetLeft(this, X);
-        Canvas.SetTop(this, Y);
+        if (d is Bullet bullet && e.NewValue is Point newPos)
+        {
+            Canvas.SetLeft(bullet, newPos.X);
+            Canvas.SetTop(bullet, newPos.Y);
+        }
     }
 }
