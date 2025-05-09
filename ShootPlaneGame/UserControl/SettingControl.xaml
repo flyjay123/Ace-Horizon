@@ -20,27 +20,27 @@
 
                 <!-- 音量控制 -->
                 <TextBlock Text="Music Volume" Foreground="White" Margin="0,10,0,2" FontSize="14"/>
-                <Slider Minimum="0" Maximum="100" Value="{Binding MusicVolume, Mode=TwoWay}" PreviewMouseDown="Slider_PreviewMouseDown"/>
+                <Slider Minimum="0" Maximum="100" Value="{Binding MusicVolume, Mode=TwoWay}" PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"/>
 
                 <!-- 敌军速度 -->
                 <TextBlock Text="Enemy Speed" Foreground="White" Margin="0,10,0,2" FontSize="14"/>
-                <Slider Minimum="20" Maximum="200" Value="{Binding EnemySpeed, Mode=TwoWay}" PreviewMouseDown="Slider_PreviewMouseDown"/>
+                <Slider Minimum="20" Maximum="200" Value="{Binding EnemySpeed, Mode=TwoWay}" PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"/>
 
                 <!-- 子弹移动速度 -->
                 <TextBlock Text="Bullet Speed" Foreground="White" Margin="0,10,0,2" FontSize="14"/>
-                <Slider Minimum="100" Maximum="1000" Value="{Binding BulletSpeed, Mode=TwoWay}" PreviewMouseDown="Slider_PreviewMouseDown"/>
+                <Slider Minimum="100" Maximum="1000" Value="{Binding BulletSpeed, Mode=TwoWay}" PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"/>
 
                 <!-- 子弹发射频率 -->
                 <TextBlock Text="Fire Interval" Foreground="White" Margin="0,10,0,2" FontSize="14"/>
-                <Slider Minimum="50" Maximum="1000" Value="{Binding BulletSpawnInterval, Mode=TwoWay}" PreviewMouseDown="Slider_PreviewMouseDown"/>
+                <Slider Minimum="50" Maximum="1000" Value="{Binding BulletSpawnInterval, Mode=TwoWay}" PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"/>
                 
                 <!-- 敌人生成频率 -->
                 <TextBlock Text="Enemy Spawn Interval" Foreground="White" Margin="0,10,0,2" FontSize="14"/>
-                <Slider Minimum="50" Maximum="1000" Value="{Binding EnemySpawnInterval, Mode=TwoWay}" PreviewMouseDown="Slider_PreviewMouseDown"/>
+                <Slider Minimum="50" Maximum="1000" Value="{Binding EnemySpawnInterval, Mode=TwoWay}" PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"/>
                 
                 <!-- Boss生成频率 -->
                 <TextBlock Text="Boss Spawn Interval" Foreground="White" Margin="0,10,0,2" FontSize="14"/>
-                <Slider Minimum="1000" Maximum="10000" Value="{Binding BossSpawnInterval, Mode=TwoWay}" TickFrequency="500" PreviewMouseDown="Slider_PreviewMouseDown"/>
+                <Slider Minimum="1000" Maximum="10000" Value="{Binding BossSpawnInterval, Mode=TwoWay}" TickFrequency="500" PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>
