@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
@@ -11,6 +12,34 @@ using ShootPlaneGame.Object;
 using WpfAnimatedGif;
 
 namespace ShootPlaneGame.UserControl;
+
+public static class CompositionTargetEx
+{
+    private static TimeSpan _last = TimeSpan.Zero;
+    private static event EventHandler<RenderingEventArgs> _FrameUpdating;
+
+    public static event EventHandler<RenderingEventArgs> FrameUpdating
+    {
+        add
+        {
+            if (_FrameUpdating == null) CompositionTarget.Rendering += CompositionTarget_Rendering;
+            _FrameUpdating += value;
+        }
+        remove
+        {
+            _FrameUpdating -= value;
+            if (_FrameUpdating == null) CompositionTarget.Rendering -= CompositionTarget_Rendering;
+        }
+    }
+
+    static void CompositionTarget_Rendering(object sender, EventArgs e)
+    {
+        RenderingEventArgs args = (RenderingEventArgs)e;
+        if (args.RenderingTime == _last) return;
+        _last = args.RenderingTime;
+        _FrameUpdating(sender, args);
+    }
+}
 
 public partial class GameView : System.Windows.Controls.UserControl
 {
@@ -37,6 +66,7 @@ public partial class GameView : System.Windows.Controls.UserControl
         DataContext = ViewModel;
         SettingControl.DataContext = settingsViewModel;
         catImages = new List<BitmapImage>() { Resource.Cat1, Resource.Cat2, Resource.Cat3 };
+        RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
         InputMethod.SetIsInputMethodEnabled(this, false); // 禁用输入法
     }
 
@@ -71,7 +101,7 @@ public partial class GameView : System.Windows.Controls.UserControl
         DamageOverlay.Width = ActualWidth;
         DamageOverlay.Height = ActualHeight;
 
-        CompositionTarget.Rendering += GameLoop;
+        CompositionTargetEx.FrameUpdating += GameLoop;
     }
 
     private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -404,7 +434,7 @@ public partial class GameView : System.Windows.Controls.UserControl
         {
             if (settingsViewModel.IsMusicEnabled)
                 SoundPlayer.PauseBackgroundMusic();
-            CompositionTarget.Rendering -= GameLoop;
+            CompositionTargetEx.FrameUpdating -= GameLoop;
             PauseMenu.Visibility = Visibility.Visible;
             gameTime.Stop();
             isPaused = true;
@@ -413,7 +443,7 @@ public partial class GameView : System.Windows.Controls.UserControl
         {
             if(settingsViewModel.IsMusicEnabled)
                 SoundPlayer.PlayBackgroundMusic();
-            CompositionTarget.Rendering += GameLoop;
+            CompositionTargetEx.FrameUpdating += GameLoop;
             PauseMenu.Visibility = Visibility.Collapsed;
             gameTime.Start();
             isPaused = false;
@@ -456,12 +486,12 @@ public partial class GameView : System.Windows.Controls.UserControl
             SoundPlayer.PlayBackgroundMusic();
 
         // 重新开始循环
-        CompositionTarget.Rendering += GameLoop;
+        CompositionTargetEx.FrameUpdating += GameLoop;
     }
 
     private void GameOver()
     {
-        CompositionTarget.Rendering -= GameLoop;
+        CompositionTargetEx.FrameUpdating -= GameLoop;
         PauseMenu.Visibility = Visibility.Collapsed;
         RestartButton.Visibility = Visibility.Visible;
     }
