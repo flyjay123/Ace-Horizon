@@ -7,15 +7,39 @@
              mc:Ignorable="d"
              d:DesignHeight="30" d:DesignWidth="300">
     <Grid>
-        <Border Background="Gray" CornerRadius="5">
-            <Grid>
-                <Rectangle x:Name="ExpFill" Fill="LimeGreen" RadiusX="5" RadiusY="5" />
+        <Border Background="#111111" CornerRadius="5" BorderBrush="#444" BorderThickness="1">
+            <Grid ClipToBounds="True">
+                <Rectangle x:Name="ExpFill" RadiusX="5" RadiusY="5" HorizontalAlignment="Left">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Offset="0.0" Color="#FF0000"/>   <!-- 红 -->
+                            <GradientStop Offset="0.25" Color="#FFA500"/>  <!-- 橙 -->
+                            <GradientStop Offset="0.5" Color="#FFFF00"/>   <!-- 黄 -->
+                            <GradientStop Offset="0.75" Color="#ADFF2F"/>  <!-- 黄绿 -->
+                            <GradientStop Offset="1.0" Color="#00FF00"/>   <!-- 绿 -->
+                        </LinearGradientBrush>
+
+                    </Rectangle.Fill>
+                </Rectangle>
                 <TextBlock x:Name="ExpText"
                            TextAlignment="Center"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Center"
-                           Foreground="White"
-                           FontWeight="Bold"/>
+                           Foreground="Black"
+                           FontWeight="Bold"
+                           FontSize="14"
+                           Effect="{DynamicResource GlowEffect}"/>
+                
+                <!-- 闪光特效 -->
+                <Rectangle x:Name="ShineEffect" IsHitTestVisible="False">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#00FFFFFF" Offset="0.0"/>
+                            <GradientStop Color="#99FFFFFF" Offset="0.5"/>
+                            <GradientStop Color="#00FFFFFF" Offset="1.0"/>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
             </Grid>
         </Border>
     </Grid>

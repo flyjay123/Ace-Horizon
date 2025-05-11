@@ -1,4 +1,6 @@
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using ShootPlaneGame.Helper;
 
 namespace ShootPlaneGame.UserControl;
@@ -9,6 +11,7 @@ public partial class ExpBarControl
     {
         InitializeComponent();
         SizeChanged += (s, e) => UpdateSize();
+        Loaded += (s, e) => StartShineAnimation();
     }
     
     public static readonly DependencyProperty CurrentExpProperty =
@@ -41,7 +44,8 @@ public partial class ExpBarControl
 
     private void UpdateBar()
     {
-        ExpText.Text = $"{CurrentExp} / {MaxExp}";
+        ExpText.Text = $"{(int)CurrentExp} / {(int)MaxExp}";
+        UpdateSize();
     }
     
     private void UpdateSize()
@@ -49,4 +53,24 @@ public partial class ExpBarControl
         double ratio = MathHelper.Clamp(MaxExp == 0 ? 0 : CurrentExp / MaxExp, 0, 1);
         ExpFill.Width = ActualWidth * ratio;
     }
+    
+    private void StartShineAnimation()
+    {
+        var anim = new DoubleAnimation
+        {
+            From = -ActualWidth,
+            To = ActualWidth,
+            Duration = TimeSpan.FromSeconds(2.5),
+            RepeatBehavior = RepeatBehavior.Forever
+        };
+
+        ShineEffect.Width = ActualWidth / 3;
+        ShineEffect.Height = ActualHeight;
+        ShineEffect.VerticalAlignment = VerticalAlignment.Stretch;
+
+        var transform = new TranslateTransform();
+        ShineEffect.RenderTransform = transform;
+        transform.BeginAnimation(TranslateTransform.XProperty, anim);
+    }
+
 }

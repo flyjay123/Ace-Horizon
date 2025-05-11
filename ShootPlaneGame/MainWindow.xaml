@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ShootPlaneGame"
         xmlns:userControl="clr-namespace:ShootPlaneGame.UserControl"
         mc:Ignorable="d"
-        Title="消灭哈基米" Height="800" Width="480" Background="AntiqueWhite">
+        Title="消灭哈基米" Height="800" Width="500" Background="AntiqueWhite">
     
     <Grid>
         <userControl:GameView x:Name="GameView"

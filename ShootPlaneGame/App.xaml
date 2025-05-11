@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:ShootPlaneGame"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <DropShadowEffect x:Key="GlowEffect" 
+                          Color="White" 
+                          BlurRadius="4" 
+                          ShadowDepth="0" 
+                          Opacity="0.8"/>
     </Application.Resources>
 </Application>

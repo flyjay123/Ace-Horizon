@@ -7,12 +7,16 @@
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="300"
              Focusable="True"
-             Height="800" Width="480"
              MouseMove="GameView_OnMouseMove"
              KeyDown="Window_KeyDown" SizeChanged="Window_SizeChanged" Loaded="UserControl_Loaded" Background="Black">
     <Grid>
-        <Grid>
-            <local:ExpBarControl VerticalAlignment="Top" CurrentExp="{Binding CurrentExp}" MaxExp="{Binding MaxExp}"></local:ExpBarControl>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <local:ExpBarControl VerticalAlignment="Top" CurrentExp="{Binding CurrentExp}" MaxExp="{Binding MaxExp}"></local:ExpBarControl>
+
+        <Grid Grid.Row="1">
             <Canvas Name="GameCanvas">
                 <!-- 玩家飞机 -->
                 <Image x:Name="Player" Width="100" Height="100" Source="pack://application:,,,/Assets/planewithyt.png"/>
