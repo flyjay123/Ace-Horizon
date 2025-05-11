@@ -151,7 +151,6 @@ public partial class GameView : System.Windows.Controls.UserControl
 
             Bullet bullet = new Bullet(bulletX, playerY, bulletWidth, bulletHeight, Resource.Basketball)
             {
-                Tag = "Bullet",
                 Speed = settingsViewModel.BulletSpeed
             };
 
@@ -205,7 +204,6 @@ public partial class GameView : System.Windows.Controls.UserControl
             Height = 40,
             MaxHealth = 3,
             Health = 3,
-            Tag = "Enemy"
         };
         ImageBehavior.SetAnimatedSource(enemy.Sprite, cat);
 
@@ -222,7 +220,6 @@ public partial class GameView : System.Windows.Controls.UserControl
             Height = bossSize,
             MaxHealth = 6,
             Health = 6,
-            Tag = "Enemy",
             ScoreValue = 25
         };
         ImageBehavior.SetAnimatedSource(boss.Sprite, Resource.KunKun1);
@@ -237,13 +234,13 @@ public partial class GameView : System.Windows.Controls.UserControl
 
         foreach (UIElement el in GameCanvas.Children)
         {
-            if (el is Bullet bullet && (string)bullet.Tag == "Bullet")
+            if (el is Bullet bullet)
             {
                 if (bullet.Position.Y < 0)
                     toRemove.Add(bullet);
                 bullet.Position = bullet.Position with { Y = bullet.Position.Y - bullet.Speed * delta };
             }
-            else if (el is Enemy enemy && (string?)enemy.Tag == "Enemy")
+            else if (el is Enemy enemy)
             {
                 enemy.Position = enemy.Position with { Y = enemy.Position.Y + enemy.Speed * delta };
                 // 让敌人从上到下移动
@@ -282,8 +279,8 @@ public partial class GameView : System.Windows.Controls.UserControl
 
     private void CheckCollisions()
     {
-        var bullets = GameCanvas.Children.OfType<Bullet>().Where(r => (string)r.Tag == "Bullet").ToList();
-        var enemies = GameCanvas.Children.OfType<Enemy>().Where(r => (string)r.Tag == "Enemy").ToList();
+        var bullets = GameCanvas.Children.OfType<Bullet>().ToList();
+        var enemies = GameCanvas.Children.OfType<Enemy>().ToList();
 
         foreach (var bullet in bullets)
         {
@@ -478,12 +475,8 @@ public partial class GameView : System.Windows.Controls.UserControl
 
         foreach (UIElement el in GameCanvas.Children)
         {
-            if (el is Bullet r && ((string?)r.Tag == "Bullet"))
+            if (el is Bullet or Enemy)
                 toRemove.Add(el);
-
-            else if (el is Enemy enemy && (string?)enemy.Tag == "Enemy")
-                toRemove.Add(el);
-
         }
 
         foreach (var el in toRemove)

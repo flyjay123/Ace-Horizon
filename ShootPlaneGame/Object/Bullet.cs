@@ -39,8 +39,6 @@ public class Bullet : Image
         Source = source;
 
         Position = new Point(startX, startY);
-
-        Tag = "Bullet";
     }
 
     public Bullet()
