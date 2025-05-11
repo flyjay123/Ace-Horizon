@@ -425,7 +425,7 @@ public partial class GameView : System.Windows.Controls.UserControl
             Canvas.SetLeft(particle, x + offsetX);
             Canvas.SetTop(particle, y + offsetY);
 
-            GameCanvas.Children.Add(particle);
+            EffectsCanvas.Children.Add(particle);
 
             // 每个动画单独创建
             var animationScaleX = new DoubleAnimation(1, 4, TimeSpan.FromMilliseconds(150));

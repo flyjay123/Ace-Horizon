@@ -16,6 +16,9 @@
                 <!-- 玩家飞机 -->
                 <Image x:Name="Player" Width="100" Height="100" Source="pack://application:,,,/Assets/planewithyt.png"/>
             </Canvas>
+            <Canvas Name="EffectsCanvas">
+                
+            </Canvas>
             <TextBlock x:Name="FpsText"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Top"
