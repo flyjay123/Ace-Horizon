@@ -8,6 +8,8 @@ public class SettingsViewModel : INotifyPropertyChanged
 {
     public int InitialLives; // 初始生命值
     public int InitialScore; // 初始分数
+    // 升级所需经验值
+    public int[] LevelExp = { 5, 20, 50, 100, 200, 300, 400, 500};
     
     private bool _isMusicEnabled;
     public bool IsMusicEnabled

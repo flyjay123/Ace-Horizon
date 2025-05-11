@@ -41,7 +41,8 @@ public class Enemy : System.Windows.Controls.UserControl
     private const double HealthBarHeight = 5;
     private const double HealthBarOffset = 8;
 
-    public int ScoreValue { get; set; } = 10;
+    public double ScoreValue { get; set; } = 10;
+    public double ExpValue { get; set; } = 1.0;
 
 private double Clamp(double value, double min, double max) =>
         Math.Max(min, Math.Min(max, value));

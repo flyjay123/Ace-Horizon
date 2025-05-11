@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
-using ShootPlaneGame.Utils;
-using ShootPlaneGame.ViewModels;
+using ShootPlaneGame.Helper;
 
 namespace ShootPlaneGame.ViewModels;
 
@@ -24,8 +23,8 @@ public class GameViewModel : INotifyPropertyChanged
     }
     
     // The player's score
-    private int score;
-    public int Score
+    private double score;
+    public double Score
     {
         get => score;
         set => SetField(ref score, value);
@@ -41,6 +40,41 @@ public class GameViewModel : INotifyPropertyChanged
             SetField(ref lives, value);
             OnPropertyChanged(nameof(LifeIcons));
         }
+    }
+    
+    // Current Exp
+    private double currentExp;
+    public double CurrentExp
+    {
+        get => currentExp;
+        set
+        {
+            if (value >= MaxExp)
+            {
+                Level++;
+                MaxExp = settingsViewModel.LevelExp[MathHelper.Clamp(Level - 1, 0, settingsViewModel.LevelExp.Length - 1)];
+                SetField(ref currentExp, 0);
+            }
+            else
+            {
+                SetField(ref currentExp, value);
+            }
+        }
+    }
+
+    // Max Exp
+    private double maxExp;
+    public double MaxExp
+    {
+        get => maxExp;
+        set => SetField(ref maxExp, value);
+    }
+    
+    private int level;
+    public int Level
+    {
+        get => level;
+        set => SetField(ref level, value);
     }
 
     public ObservableCollection<int> LifeIcons => new(LivesIcons());
@@ -63,6 +97,10 @@ public class GameViewModel : INotifyPropertyChanged
         Score = settingsViewModel.InitialScore;
         Lives = settingsViewModel.InitialLives;
         FPS = 0;
+        
+        Level = 1;
+        MaxExp = settingsViewModel.LevelExp[0];
+        CurrentExp = 0;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

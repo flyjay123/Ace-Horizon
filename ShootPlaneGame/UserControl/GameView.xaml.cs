@@ -220,7 +220,8 @@ public partial class GameView : System.Windows.Controls.UserControl
             Height = bossSize,
             MaxHealth = 6,
             Health = 6,
-            ScoreValue = 25
+            ScoreValue = 25,
+            ExpValue = 2.5
         };
         ImageBehavior.SetAnimatedSource(boss.Sprite, Resource.KunKun1);
         GameCanvas.Children.Add(boss);
@@ -351,8 +352,8 @@ public partial class GameView : System.Windows.Controls.UserControl
     {
         GameCanvas.Children.Remove(enemy);
         ViewModel.Score += enemy.ScoreValue;
+        ViewModel.CurrentExp += enemy.ExpValue;
 
-        // System.Media.SystemSounds.Beep.Play();
         ShowExplosionEffect(enemy.Position.X, enemy.Position.Y);
     }
 
