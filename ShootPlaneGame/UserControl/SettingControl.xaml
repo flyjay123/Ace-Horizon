@@ -29,6 +29,10 @@
                 <!-- 子弹移动速度 -->
                 <TextBlock Text="Bullet Speed" Foreground="White" Margin="0,10,0,2" FontSize="14"/>
                 <Slider Minimum="100" Maximum="1000" Value="{Binding BulletSpeed, Mode=TwoWay}" PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"/>
+                
+                <!-- 子弹发射数量 -->
+                <TextBlock Text="Bullet Count" Foreground="White" Margin="0,10,0,2" FontSize="14"/>
+                <Slider Minimum="1" Maximum="10" Value="{Binding BulletCount, Mode=TwoWay}" PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"/>
 
                 <!-- 子弹发射频率 -->
                 <TextBlock Text="Fire Interval" Foreground="White" Margin="0,10,0,2" FontSize="14"/>
@@ -36,7 +40,7 @@
                 
                 <!-- 敌人生成频率 -->
                 <TextBlock Text="Enemy Spawn Interval" Foreground="White" Margin="0,10,0,2" FontSize="14"/>
-                <Slider Minimum="50" Maximum="1000" Value="{Binding EnemySpawnInterval, Mode=TwoWay}" PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"/>
+                <Slider Minimum="50" Maximum="2000" Value="{Binding EnemySpawnInterval, Mode=TwoWay}" PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"/>
                 
                 <!-- Boss生成频率 -->
                 <TextBlock Text="Boss Spawn Interval" Foreground="White" Margin="0,10,0,2" FontSize="14"/>

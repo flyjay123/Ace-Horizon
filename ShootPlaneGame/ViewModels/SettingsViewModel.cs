@@ -1,21 +1,15 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using ShootPlaneGame.Utils;
 
-namespace ShootPlaneGame.Utils;
+namespace ShootPlaneGame.ViewModels;
 
 public class SettingsViewModel : INotifyPropertyChanged
 {
     public int InitialLives; // 初始生命值
     public int InitialScore; // 初始分数
     
-    private bool _isMusicEnabled = true;
-    private double _musicVolume = 0.5;
-    private double _enemySpeed = 100;
-    private double _bulletSpeed = 300;
-    private double _bulletSpawnInterval = 200;
-    private double _enemySpawnInterval = 1000;
-    private double _bossSpawnInterval = 5000;
-    
+    private bool _isMusicEnabled;
     public bool IsMusicEnabled
     {
         get => _isMusicEnabled;
@@ -33,6 +27,7 @@ public class SettingsViewModel : INotifyPropertyChanged
         }
     }
 
+    private double _musicVolume = 0.5;
     public double MusicVolume
     {
         get => _musicVolume;
@@ -43,30 +38,42 @@ public class SettingsViewModel : INotifyPropertyChanged
         }
     }
 
+    private double _enemySpeed = 100;
     public double EnemySpeed
     {
         get => _enemySpeed;
         set => SetField(ref _enemySpeed, value);
     }
 
+    private double _bulletSpeed = 300;
     public double BulletSpeed
     {
         get => _bulletSpeed;
         set => SetField(ref _bulletSpeed, value);
     }
 
+    private int _bulletCount = 1;
+    public int BulletCount
+    {
+        get => _bulletCount;
+        set => SetField(ref _bulletCount, value);
+    }
+
+    private double _bulletSpawnInterval = 200;
     public double BulletSpawnInterval
     {
         get => _bulletSpawnInterval;
         set => SetField(ref _bulletSpawnInterval, value);
     }
     
+    private double _enemySpawnInterval = 1000;
     public double EnemySpawnInterval
     {
         get => _enemySpawnInterval;
         set => SetField(ref _enemySpawnInterval, value);
     }
     
+    private double _bossSpawnInterval = 5000;
     public double BossSpawnInterval
     {
         get => _bossSpawnInterval;
@@ -75,12 +82,13 @@ public class SettingsViewModel : INotifyPropertyChanged
 
     public SettingsViewModel()
     {
+        IsMusicEnabled = false;
         Reset();
     }
     
     public void Reset()
     {
-        EnemySpeed = 200;
+        EnemySpeed = 100;
         BulletSpeed = 500;
         EnemySpawnInterval = 1000;
         BulletSpawnInterval = 200;

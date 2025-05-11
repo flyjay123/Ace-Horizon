@@ -6,6 +6,12 @@ public class SoundPlayer
 {
     private static MediaPlayer mediaPlayer = new MediaPlayer();
 
+    public static double MusicVolume
+    {
+        get => mediaPlayer.Volume;
+        set => mediaPlayer.Volume = value;
+    }
+
     public static void BeginBackgroundMusic(string path)
     {
         mediaPlayer.Open(new Uri(path, UriKind.Relative));

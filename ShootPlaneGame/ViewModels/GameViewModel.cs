@@ -1,7 +1,8 @@
 using System.Collections.ObjectModel;
 using ShootPlaneGame.Utils;
+using ShootPlaneGame.ViewModels;
 
-namespace ShootPlaneGame;
+namespace ShootPlaneGame.ViewModels;
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

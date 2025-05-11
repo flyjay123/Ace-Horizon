@@ -9,6 +9,7 @@ using System.Windows.Shapes;
 using ShootPlaneGame.Assets;
 using ShootPlaneGame.Utils;
 using ShootPlaneGame.Object;
+using ShootPlaneGame.ViewModels;
 using WpfAnimatedGif;
 
 namespace ShootPlaneGame.UserControl;
@@ -101,6 +102,8 @@ public partial class GameView : System.Windows.Controls.UserControl
         DamageOverlay.Width = ActualWidth;
         DamageOverlay.Height = ActualHeight;
 
+        settingsViewModel.MusicVolume = SoundPlayer.MusicVolume * 100;
+
         CompositionTargetEx.FrameUpdating += GameLoop;
     }
 
@@ -127,19 +130,33 @@ public partial class GameView : System.Windows.Controls.UserControl
 
     private void FireBullet()
     {
-        int height = 32;
-        int width = 32;
-        
-        double playerX = Canvas.GetLeft(Player) + Player.Width / 2 - width / 2;
-        double playerY = Canvas.GetTop(Player) - height;
-        
-        Bullet bullet = new Bullet(playerX, playerY, width, height, Resource.Basketball)
+        int bulletWidth = 32;
+        int bulletHeight = 32;
+        int bulletCount = Math.Max(1, settingsViewModel.BulletCount); // 至少发一颗
+        double spacing = 1;
+
+        double playerXCenter = Canvas.GetLeft(Player) + Player.Width / 2;
+        double playerY = Canvas.GetTop(Player) - bulletHeight;
+
+        double totalWidth = bulletCount * bulletWidth + (bulletCount - 1) * spacing;
+        double startX = playerXCenter - totalWidth / 2;
+
+        for (int i = 0; i < bulletCount; i++)
         {
-            Tag = "Bullet",
-            Speed = settingsViewModel.BulletSpeed
-        };
-        
-        GameCanvas.Children.Add(bullet);
+            double bulletX = startX + i * (bulletWidth + spacing);
+
+            // 检查是否超出画布边界
+            if (bulletX < 0 || bulletX + bulletWidth > GameCanvas.ActualWidth)
+                continue;
+
+            Bullet bullet = new Bullet(bulletX, playerY, bulletWidth, bulletHeight, Resource.Basketball)
+            {
+                Tag = "Bullet",
+                Speed = settingsViewModel.BulletSpeed
+            };
+
+            GameCanvas.Children.Add(bullet);
+        }
     }
 
     private void GameLoop(object? sender, EventArgs e)
